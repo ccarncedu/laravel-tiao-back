@@ -1,11 +1,10 @@
-public function up()
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Link extends Model
 {
-    Schema::create('links', function (Blueprint $table) {
-        $table->id();
-        $table->string('title');
-        $table->string('url');
-        $table->boolean('approved')->default(false);
-        $table->foreignId('user_id')->constrained()->onDelete('cascade');
-        $table->timestamps();
-    });
+    //
 }
