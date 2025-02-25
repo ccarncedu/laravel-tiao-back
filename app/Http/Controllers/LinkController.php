@@ -10,8 +10,9 @@ class LinkController extends Controller
 {
     public function index()
     {
-        return Link::where('approved', true)->paginate(5);
+        return Link::paginate(5); 
     }
+    
 
     public function store(Request $request)
     {
@@ -54,4 +55,24 @@ class LinkController extends Controller
         $link->delete();
         return response()->json(['message' => 'Link excluído com sucesso.']);
     }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'title' => 'sometimes|string',
+            'url' => 'sometimes|url',
+            'approved' => 'sometimes|boolean',
+        ]);
+
+        $link = Link::findOrFail($id);
+
+        if ($link->user_id !== Auth::id() && !Auth::user()->is_admin) {
+            return response()->json(['error' => 'Ação não permitida.'], 403);
+        }
+
+        $link->update($request->only(['title', 'url', 'approved']));
+
+        return response()->json($link);
+    }
+
 }
