@@ -23,7 +23,15 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return response()->json(['token' => $user->createToken('token')->plainTextToken]);
+        return response()->json([
+            'token' => $user->createToken('token')->plainTextToken,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'is_admin' => $user->is_admin,
+            ]
+        ]);
     }
 
     public function login(Request $request)
@@ -39,7 +47,15 @@ class AuthController extends Controller
             throw ValidationException::withMessages(['email' => ['Credenciais inválidas.']]);
         }
 
-        return response()->json(['token' => $user->createToken('token')->plainTextToken]);
+        return response()->json([
+            'token' => $user->createToken('token')->plainTextToken,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'is_admin' => $user->is_admin,
+            ]
+        ]);
     }
 
     public function logout(Request $request)

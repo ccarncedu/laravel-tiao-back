@@ -11,9 +11,11 @@ class LinkController extends Controller
 {
     public function index(Request $request, YouTubeService $youtubeService)
     {
-        $perPage = $request->query('per_page', 5); 
+        $perPage = $request->query('per_page', 5);
+
+        $query = Auth::user()->is_admin ? Link::query() : Link::where('approved', true);
     
-        $links = Link::paginate($perPage);
+        $links = $query->paginate($perPage);
     
         $links->getCollection()->transform(function ($link) use ($youtubeService) {
             $youtubeData = $youtubeService->getVideoStats($link->url);
@@ -26,6 +28,7 @@ class LinkController extends Controller
                 'views' => $youtubeData['views'] ?? 0,
                 'likes' => $youtubeData['likes'] ?? 0,
                 'user_id' => $link->user_id,
+                'is_approved' => (bool) $link->approved 
             ];
         });
     
