@@ -15,4 +15,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/links', [LinkController::class, 'store']);
     Route::put('/links/{id}', [LinkController::class, 'update']);
     Route::delete('/links/{id}', [LinkController::class, 'destroy']);
+    Route::put('/links/{id}/approve', [LinkController::class, 'approve']);
 });

@@ -1,5 +1,5 @@
-# Usando PHP 8.2 com Apache
-FROM php:8.2-apache
+# Usando PHP 8.2
+FROM php:8.2-cli
 
 # Instalar dependências do sistema
 RUN apt-get update && apt-get install -y \
@@ -21,11 +21,16 @@ COPY . .
 # Instalar dependências do Laravel
 RUN composer install --no-dev --optimize-autoloader
 
-# Definir permissões
-RUN chmod -R 775 storage bootstrap/cache
+# Criar diretórios necessários e definir permissões
+RUN mkdir -p storage bootstrap/cache && \
+    chmod -R 775 storage bootstrap/cache
 
-# Expor a porta do Apache
-EXPOSE 80
+# Copiar o script de inicialização
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# Rodar o servidor Apache
-CMD ["apache2-foreground"]
+# Expor a porta do servidor embutido do PHP
+EXPOSE 8000
+
+# Definir o script de inicialização
+ENTRYPOINT ["/entrypoint.sh"]
