@@ -5,24 +5,45 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Link;
 use Illuminate\Support\Facades\Auth;
+use App\Services\YouTubeService;
 
 class LinkController extends Controller
 {
-    public function index()
+    public function index(Request $request, YouTubeService $youtubeService)
     {
-        return Link::paginate(5); 
+        $perPage = $request->query('per_page', 5); 
+    
+        $links = Link::paginate($perPage);
+    
+        $links->getCollection()->transform(function ($link) use ($youtubeService) {
+            $youtubeData = $youtubeService->getVideoStats($link->url);
+    
+            return [
+                'id' => $link->id,
+                'title' => $youtubeData['title'] ?? $link->title,
+                'url' => $link->url,
+                'thumbnail' => $youtubeData['thumbnail'] ?? null,
+                'views' => $youtubeData['views'] ?? 0,
+                'likes' => $youtubeData['likes'] ?? 0,
+                'user_id' => $link->user_id,
+            ];
+        });
+    
+        return response()->json([
+            'data' => $links->items(),
+            'current_page' => $links->currentPage(),
+            'total_pages' => $links->lastPage(),
+            'total_items' => $links->total(),
+        ]);
     }
     
-
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string',
             'url' => 'required|url',
         ]);
 
         $link = Link::create([
-            'title' => $request->title,
             'url' => $request->url,
             'user_id' => Auth::id(),
         ]);
@@ -59,7 +80,6 @@ class LinkController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'title' => 'sometimes|string',
             'url' => 'sometimes|url',
             'approved' => 'sometimes|boolean',
         ]);

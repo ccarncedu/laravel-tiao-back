@@ -47,4 +47,10 @@ class AuthController extends Controller
         $request->user()->tokens()->delete();
         return response()->json(['message' => 'Logout realizado com sucesso.']);
     }
+
+    public function checkToken(Request $request)
+    {
+        return response()->json(['valid' => auth()->check()]);
+    }
+
 }
