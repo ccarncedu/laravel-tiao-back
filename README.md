@@ -21,3 +21,13 @@ Foi criado via comando, uma conta admin, para ser utilizada nos testes:
     "password": "password"
 }
 ```
+
+
+Prints do sistema 
+![image](https://github.com/user-attachments/assets/e09e5557-146d-44e9-a033-b520bfe27bf0)
+![image](https://github.com/user-attachments/assets/031b95a8-4b96-4c13-ac7d-d8deaa3c0a79)
+![image](https://github.com/user-attachments/assets/a6e78932-f646-45fc-8417-e82c8cb6b679)
+
+
+
+Perfil Github: https://github.com/educcarnn
